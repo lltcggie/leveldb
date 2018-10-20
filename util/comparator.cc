@@ -3,10 +3,13 @@
 // found in the LICENSE file. See the AUTHORS file for names of contributors.
 
 #include <algorithm>
-#include <stdint.h>
+#include <cstdint>
+#include <string>
+
 #include "leveldb/comparator.h"
 #include "leveldb/slice.h"
 #include "util/logging.h"
+#include "util/no_destructor.h"
 
 namespace leveldb {
 
@@ -63,11 +66,11 @@ class BytewiseComparatorImpl : public Comparator {
     // *key is a run of 0xffs.  Leave it alone.
   }
 };
-}
-static const BytewiseComparatorImpl bytewise;
+}  // namespace
 
 const Comparator* BytewiseComparator() {
-  return &bytewise;
+  static NoDestructor<BytewiseComparatorImpl> singleton;
+  return singleton.get();
 }
 
-}
+}  // namespace leveldb
