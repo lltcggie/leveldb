@@ -173,12 +173,25 @@ target_sources(leveldb
     "${LEVELDB_PUBLIC_INCLUDE_DIR}/write_batch.h"
 )
 
+if(WIN32)
+  target_sources(leveldb
+    PRIVATE
+      "${PROJECT_SOURCE_DIR}/port/port_win.h"
+      "${PROJECT_SOURCE_DIR}/port/port_win.cc"
+      "${PROJECT_SOURCE_DIR}/util/win_logger.h"
+      "${PROJECT_SOURCE_DIR}/util/win_logger.cc"
+      "${PROJECT_SOURCE_DIR}/util/env_boost.cc"
+  )
+else(WIN32)
+  target_sources(leveldb
+    PRIVATE
+      "${PROJECT_SOURCE_DIR}/util/env_posix.cc"
+      "${PROJECT_SOURCE_DIR}/util/posix_logger.h"
+  )
+endif(WIN32)
+
 # POSIX code is specified separately so we can leave it out in the future.
-target_sources(leveldb
-  PRIVATE
-    "${PROJECT_SOURCE_DIR}/util/env_posix.cc"
-    "${PROJECT_SOURCE_DIR}/util/posix_logger.h"
-)
+
 
 # MemEnv is not part of the interface and could be pulled to a separate library.
 target_sources(leveldb
